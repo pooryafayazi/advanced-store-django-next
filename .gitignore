@@ -35,3 +35,8 @@ Thumbs.db
 
 # Docker
 *.log
+
+
+# env files
+!.env.prod.example
+!.env.dev.example
