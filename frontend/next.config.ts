@@ -1,8 +1,15 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
-  reactCompiler: true,
+  async rewrites() {
+    const backend = process.env.DJANGO_INTERNAL_URL || "http://backend:8000";
+    return [
+      {
+        source: "/api/:path*",
+        destination: `${backend}/api/:path*`,
+      },
+    ];
+  },
 };
 
 export default nextConfig;

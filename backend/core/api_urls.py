@@ -1,0 +1,7 @@
+from django.urls import path, re_path
+from . import api_views
+
+urlpatterns = [
+    path("health/", api_views.health, name="api-health"),
+    re_path(r"^health/?$", api_views.health, name="api-health"),
+]
