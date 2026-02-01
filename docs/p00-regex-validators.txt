@@ -1,0 +1,22 @@
+Regex:
+
+^\+98(9\d{9})$
+
+2) 10 digits  for ID number:
+
+^\d{10}$
+
+a better version for ignore 0000000000:
+^(?!([0-9])\1{9})\d{10}$
+
+these are Regex without chcksum
+
+
+3) name just letters
+two ways:
+farsi and space:
+^[\u0600-\u06FF\s]+$
+
+farsi eng and space:
+
+^[\u0600-\u06FFa-zA-Z\s]+$
