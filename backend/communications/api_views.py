@@ -20,7 +20,7 @@ class ContactMessageCreateAPIView(generics.CreateAPIView):
 
 class NewsletterSubscribeAPIView(generics.GenericAPIView):
     serializer_class = NewsletterSubscribeSerializer
-    parser_classes = [AllowAny]
+    permission_classes = [AllowAny]
 
     def post(self, request, *args, **kwargs):
         ser = self.get_serializer(data=request.data)
