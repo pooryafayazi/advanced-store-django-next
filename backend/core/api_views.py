@@ -1,3 +1,4 @@
+# backend\core\api_views.py
 from django.http import JsonResponse
 
 def health(request):

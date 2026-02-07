@@ -1,7 +1,7 @@
 -r base.txt
 
 # Postgres driver for development
-psycopg-binary==3.2.9
+psycopg[binary]==3.2.9
 
 # Dev tools
 django-debug-toolbar==5.2.0
