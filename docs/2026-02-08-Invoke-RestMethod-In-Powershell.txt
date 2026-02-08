@@ -1,0 +1,102 @@
+Invoke-RestMethod یعنی چی؟
+
+یه دستور داخلی PowerShell برای ارسال درخواست HTTP.
+
+اگر GET نزاری، پیش‌فرض GET می‌زنه.
+
+برای POST/PUT/... باید -Method Post بدی.
+
+اگه بدنه JSON می‌فرستی باید -ContentType "application/json" بدی.
+
+برای احراز هویت JWT باید هدر Authorization رو ست کنی.
+
+✅ چرا این‌طوری Body می‌سازیم؟
+
+این قسمت:
+
+@{ email="test@example.com"; password="NewPass@12345" } | ConvertTo-Json
+
+
+یعنی:
+
+@{ ... } یک Hashtable (مثل dict پایتون)
+
+ConvertTo-Json تبدیلش می‌کنه به JSON واقعی که API بفهمه
+
+پس این خط یعنی:
+بدنه‌ی JSON بساز و ارسال کن.
+
+✅ چرا از ` (backtick) استفاده کردی؟
+
+تو پاورشل، برای **شکستن خط** و ادامه دادن دستور در خط بعده. مثل` در bash.
+
+این:
+
+Invoke-RestMethod -Method Post `
+  -Uri "..." `
+  -Body (...)
+
+
+فقط برای خواناییه، می‌تونی همشو تو یه خط هم بزنی.
+
+✅ چرا هدر Authorization رو اینجوری زدیم؟
+-Headers @{ Authorization = "Bearer $token" }
+
+
+چون استاندارد JWT اینه:
+
+سمت سرور انتظار داره: Authorization: Bearer <access_token>
+
+پس ما access token رو تو هدر می‌فرستیم تا endpoint هایی مثل /me/ بفهمن کی هستی.
+
+2) چرا توکن‌ها آخرش ... می‌ذاره و کامل چاپ نمی‌کنه؟
+
+این مشکل از نمایش (formatting) پاورشله، نه از API.
+
+PowerShell وقتی خروجی طولانی باشه (مثل JWT که خیلی بلنده)، تو حالت جدول/لیست خلاصه‌اش می‌کنه و تهش ... می‌ذاره.
+
+راه‌های درست برای گرفتن کامل توکن بدون بزرگ کردن پنجره
+✅ روش ۱: خروجی JSON خام بگیر
+$r = Invoke-RestMethod -Method Post -Uri "http://localhost:8000/api/accounts/login/" -ContentType "application/json" -Body (@{ email="test@example.com"; password="NewPass@12345" } | ConvertTo-Json)
+$r | ConvertTo-Json -Depth 10
+
+✅ روش ۲: فقط خود فیلد توکن رو چاپ کن (بهترین)
+$r = Invoke-RestMethod -Method Post -Uri "http://localhost:8000/api/accounts/login/" -ContentType "application/json" -Body (@{ email="test@example.com"; password="NewPass@12345" } | ConvertTo-Json)
+
+$r.access
+$r.refresh
+
+✅ روش ۳: توکن رو کپی‌پذیر کن
+$r.access | Set-Clipboard
+
+
+
+تست سریع با PowerShell
+Login
+Invoke-RestMethod -Method Post `
+  -Uri "http://localhost:8000/api/accounts/login/" `
+  -ContentType "application/json" `
+  -Body (@{ email="test@example.com"; password="NewPass@12345" } | ConvertTo-Json)
+
+Me (با access)
+$token = "<ACCESS>"
+Invoke-RestMethod -Headers @{ Authorization = "Bearer $token" } `
+  -Uri "http://localhost:8000/api/accounts/me/"
+
+Logout (با refresh)
+$refresh = "<REFRESH>"
+Invoke-RestMethod -Method Post `
+  -Headers @{ Authorization = "Bearer $token" } `
+  -Uri "http://localhost:8000/api/accounts/logout/" `
+  -ContentType "application/json" `
+  -Body (@{ refresh=$refresh } | ConvertTo-Json)
+
+
+Invoke-WebRequest -Method Post `
+  -Headers @{ Authorization = "Bearer $token" } `
+  -Uri "http://localhost:8000/api/accounts/logout/" `
+  -ContentType "application/json" `
+  -Body (@{ refresh=$refresh } | ConvertTo-Json) | Select-Object StatusCode, Content
+
+
+Invoke-WebRequest -Method Post -Headers @{ Authorization = "Bearer $token" } -Uri "http://localhost:8000/api/accounts/logout/" -ContentType "application/json" -Body (@{ refresh=$refresh } | ConvertTo-Json) | Select StatusCode, Content

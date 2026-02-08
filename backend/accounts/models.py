@@ -68,8 +68,8 @@ class Profile(models.Model):
     """
     user = models.OneToOneField("accounts.User", on_delete=models.CASCADE, related_name="profile", primary_key=True,)
  
-    first_name = models.CharField(max_length=255, validators=[validate_name_only_letters])
-    last_name = models.CharField(max_length=255, validators=[validate_name_only_letters])
+    first_name = models.CharField(max_length=255, blank=True, default="", validators=[validate_name_only_letters])
+    last_name = models.CharField(max_length=255, blank=True, default="", validators=[validate_name_only_letters])
 
     phone_number = models.CharField(max_length=20, null=True, blank=True, validators=[validate_phone_number])
 
@@ -93,5 +93,4 @@ def create_profile_for_user(sender, instance: User, created: bool, **kwargs):
     # if instance.type != UserType.customer.value:
     #     return
 
-    # get_or_create برای اینکه اگر دوبار سیگنال خورد، خطا نده
     Profile.objects.get_or_create(user=instance)
