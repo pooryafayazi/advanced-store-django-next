@@ -52,6 +52,8 @@ INSTALLED_APPS = [
     'accounts',
     'communications',
     'website',
+    'shop',
+
 ]
 
 MIDDLEWARE = [

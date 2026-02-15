@@ -8,5 +8,7 @@ urlpatterns = [
     re_path(r"^health/?$", api_views.health, name="api-health"),
     path("accounts/", include("accounts.api_urls")),
     path("communications/", include("communications.api_urls")),
+    path("shop/", include("shop.api_urls")),
+
 ]
 
