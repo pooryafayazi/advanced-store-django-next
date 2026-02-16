@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     'communications',
     'website',
     'shop',
+    'cart',
 
 ]
 
