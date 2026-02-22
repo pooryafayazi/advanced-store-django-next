@@ -7,15 +7,14 @@ import createCache from '@emotion/cache'
 import { useServerInsertedHTML } from 'next/navigation'
 
 function createEmotionCache() {
-  return createCache({ key: 'css', prepend: true })
+  const cache = createCache({ key: 'css', prepend: true })
+  cache.compat = true
+  return cache
 }
 
 export default function EmotionRegistry({ children }) {
-  const [cache] = React.useState(() => {
-    const c = createEmotionCache()
-    c.compat = true
-    return c
-  })
+  // The cache is created only once and remains immutable
+  const cache = React.useMemo(() => createEmotionCache(), [])
 
   useServerInsertedHTML(() => {
     const inserted = cache.inserted
@@ -29,9 +28,6 @@ export default function EmotionRegistry({ children }) {
         names.push(name)
       }
     }
-
-    // ✅ خیلی مهم: جلوگیری از دوباره-insert شدن در رندرهای بعدی
-    cache.inserted = {}
 
     if (!styles) return null
 

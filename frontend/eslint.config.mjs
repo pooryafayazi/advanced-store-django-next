@@ -9,7 +9,7 @@ export default defineConfig([
   // for styled-jsx
   {
     rules: {
-      'react/no-unknown-property': ['error', { ignore: ['jsx', 'global'] }],
+      'react/no-unknown-property': ['error', { ignore: ['jsx', 'global', "css"] }],
     },
   },
 

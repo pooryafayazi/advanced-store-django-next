@@ -1,0 +1,5 @@
+// frontend\.babelrc
+{
+  "presets": ["next/babel"],
+  "plugins": ["@emotion"]
+}
